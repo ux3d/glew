@@ -1,6 +1,5 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 ##
-## Copyright (C) 2008-2019, Nigel Stewart <nigels[]users sourceforge net>
 ## Copyright (C) 2002-2008, Marcelo E. Magallon <mmagallo[]debian org>
 ## Copyright (C) 2002-2008, Milan Ikits <milan ikits[]ieee org>
 ##
@@ -159,8 +158,8 @@ my %regex = (
     extname  => qr/^[A-Z][A-Za-z0-9_]+$/,
     none     => qr/^\(none\)$/,
     function => qr/^(.+) ([a-z][a-z0-9_]*) \((.+)\)$/i,
-    prefix   => qr/^(?:[aw]?gl|glX|egl)/, # gl | agl | wgl | glX
-    tprefix  => qr/^(?:[AW]?GL|GLX|EGL)_/, # GL_ | AGL_ | WGL_ | GLX_
+    prefix   => qr/^(?:[aw]?gl|glX)/, # gl | agl | wgl | glX
+    tprefix  => qr/^(?:[AW]?GL|GLX)_/, # GL_ | AGL_ | WGL_ | GLX_
     section  => compile_regex('^(', join('|', @sections), ')$'), # sections in spec
     token    => qr/^([A-Z0-9][A-Z0-9_x]*):?\s+((?:0x)?[0-9A-Fa-f]+(u(ll)?)?)(|\s[^\?]*)$/, # define tokens
     types    => compile_regex('\b(', join('|', keys %typemap), ')\b'), # var types

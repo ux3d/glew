@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ##
-## Copyright (C) 2008-2019, Nigel Stewart <nigels[]users sourceforge net>
 ## Copyright (C) 2002-2008, Marcelo E. Magallon <mmagallo[]debian org>
 ## Copyright (C) 2002-2008, Milan Ikits <milan ikits[]ieee org>
 ##
@@ -78,6 +77,10 @@ EOT
 # fix GL_NV_occlusion_query and GL_HP_occlusion_test
     grep -v '_HP' $1/GL_NV_occlusion_query > tmp
     mv tmp $1/GL_NV_occlusion_query
+    perl -e's/OCCLUSION_TEST_HP.*/OCCLUSION_TEST_HP 0x8165/' -pi \
+	$1/GL_HP_occlusion_test
+    perl -e's/OCCLUSION_TEST_RESULT_HP.*/OCCLUSION_TEST_RESULT_HP 0x8166/' -pi \
+	$1/GL_HP_occlusion_test
 
 # add deprecated constants to GL_ATI_fragment_shader
     cat >> $1/GL_ATI_fragment_shader <<EOT
@@ -148,14 +151,9 @@ EOT
 	typedef struct __GLXFBConfigRec *GLXFBConfigSGIX
 EOT
 
-# Skip GLX_SGIX_dmbuffer and GLX_SGIX_video_source
-# unknown DMparams, DMbuffer, etc
-    rm -f $1/GLX_SGIX_dmbuffer
-    rm -f $1/GLX_SGIX_video_source
-
 # add typedefs to GLX_SGIX_pbuffer
     cat >> $1/GLX_SGIX_pbuffer <<EOT
-    typedef XID GLXPbufferSGIX
+	typedef XID GLXPbufferSGIX
 	typedef struct { int type; unsigned long serial; Bool send_event; Display *display; GLXDrawable drawable; int event_type; int draw_type; unsigned int mask; int x, y; int width, height; int count; } GLXBufferClobberEventSGIX
 EOT
 
@@ -340,6 +338,11 @@ EOT
     grep -v "glGetPointerv" $1/GL_KHR_debug > tmp
     mv tmp $1/GL_KHR_debug
 
+# Remove GL_ARB_debug_group, GL_ARB_debug_label and GL_ARB_debug_output2, for now
+    rm -f $1/GL_ARB_debug_group
+    rm -f $1/GL_ARB_debug_label
+    rm -f $1/GL_ARB_debug_output2
+
 # add typedefs to GL_ARB_cl_event
 # parse_spec.pl can't parse typedefs from New Types section, but ought to
     cat >> $1/GL_ARB_cl_event <<EOT
@@ -496,6 +499,10 @@ EOT
 # Filter out GL_NONE enum from GL_KHR_context_flush_control
     grep -v 'GL_NONE' $1/GL_KHR_context_flush_control > tmp
     mv tmp $1/GL_KHR_context_flush_control
+
+# Filter out GL_NONE enum from GL_EGL_KHR_context_flush_control
+    grep -v 'GL_NONE' $1/GL_EGL_KHR_context_flush_control > tmp
+    mv tmp $1/GL_EGL_KHR_context_flush_control
 
 # Filter out CoverageModulation from NV_framebuffer_mixed_samples
 # Superset of EXT_raster_multisample
